@@ -34,9 +34,34 @@ const StepForm = () => {
         setFormValues({ ...formValues, ...values });
     };
 
+    const validateForm = (values) => {
+        const requiredFields = [
+            "emailId",
+            "password",
+            "firstName",
+            "address",
+            "countryCode",
+            "phoneNumber",
+            "acceptTermsAndCondition",
+        ];
+        const missingFields = requiredFields.filter((field) => !values[field]);
+
+        if (missingFields.length > 0) {
+            alert(`Please fill in the following fields: ${missingFields.join(", ")}`);
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmitForm = (values) => {
-        setFormValues({ ...formValues, ...values });
-        const { acceptTermsAndCondition, ...formData } = { ...formValues, ...values };
+        const updatedValues = { ...formValues, ...values };
+        setFormValues(updatedValues);
+
+        if (!validateForm(updatedValues)) {
+            return;
+        }
+
+        const { acceptTermsAndCondition, ...formData } = updatedValues;
 
         fetch("https://codebuddy.review/submit", {
             method: "POST",
